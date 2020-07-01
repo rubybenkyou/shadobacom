@@ -1,0 +1,51 @@
+<h4>ユーザー名：<%= @user.name %></h4>
+<br></br>
+<h4><%= @user.name %>の投稿一覧</h4>
+<br>
+<table class="table table-striped">
+    <thead class="table-dark">
+        <tr>
+            <td>記事No.</td>
+            <td>タイトル</td>
+            <td id = "table_lg">投稿日時</td>
+            <td id = "table_lg">更新日時</td>
+            <td>コメント数</td>
+            <td>お気に入り数</td>
+            <td></td>
+            <td></td>
+        </tr>
+    </thead>
+    <tbody>
+<% @user.boards.each do |board| %>
+        <tr>
+            <td><%= board.id %></td>
+            <td><%= link_to "#{board.title}",board %></td>
+            <td id = "table_lg"><%= board.created_at.strftime('%Y/%m/%d %H:%M') %></td>
+            <td id = "table_lg"><%= board.updated_at.strftime('%Y/%m/%d %H:%M') %></td>
+            <td><%= board.comments.count %></td>
+            <td>
+                <% if @current_user %>
+                  <% if board.likes.find_by(user_id: @current_user.id) %>
+                      <i class="fas fa-heart text-danger"></i> 
+                  <% else %>
+                      <i class="far fa-heart"></i>
+                  <% end %>
+                <% else %>
+                      <i class="far fa-heart"></i>
+                <% end %>
+                <%= board.likes.count %>
+            </td>
+            <td>
+                <% if @current_user && @current_user.id == board.user_id %>
+                <%= link_to "編集",edit_board_path(board),class:"btn btn-outline-dark" %>
+                <% end %>
+            </td>
+            <td>
+                <% if @current_user && @current_user.id == board.user_id %>
+                <%= link_to "削除",board_path(board),method: :delete,data:{confirm:"本当に削除しますか？"},class:"btn btn-outline-dark" %>
+                <% end %>
+            </td>
+        </tr>
+<% end %>
+    </tbody>
+</table>

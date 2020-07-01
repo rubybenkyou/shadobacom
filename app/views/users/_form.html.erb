@@ -1,0 +1,24 @@
+<%= render 'shared/error_messages' %>
+<%= form_with model: @user do |f| %>
+<div class="form-group">
+    <div class="form-group">
+        <label>ユーザーID</label>
+        <%= f.text_field :register_id,class:"form-control" %>
+    </div>
+    <div class="form-group">
+        <label>パスワード</label>
+        <%= f.password_field :password,class:"form-control" %>
+    </div>
+    <div class="form-group">
+        <label>パスワード(確認用)</label>
+        <%= f.password_field :password_confirmation,class:"form-control" %>
+    </div>
+    <div class="form-group">
+        <label>ユーザー名</label>
+        <%= f.text_field :name,class:"form-control" %>
+    </div>
+    <div class="form-group">
+        <%= f.submit "登録する",class:"btn btn-info" %>
+    </div>
+</div>
+<% end %>

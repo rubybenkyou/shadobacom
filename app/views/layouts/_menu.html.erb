@@ -1,0 +1,11 @@
+<% if @current_user %>
+          <p>現在ログインしているユーザー：<%= @current_user.name %></p>
+            <%= link_to "新規投稿",new_board_path,class:"btn btn-outline-info" %>
+            <%= link_to "マイページ",mypage_path,class:"btn btn-outline-info" %>
+            <%= link_to "ログアウト",logout_path,method: :delete,class:"btn btn-outline-info",data:{confirm:"ログアウトしますか？"} %>
+          <% else %>
+            <br>
+            <%= link_to "ユーザー登録",new_user_path,class:"btn btn-outline-info" %>
+            <%= link_to "ログイン",login_path,class:"btn btn-outline-info" %>
+            <br></br>
+<% end %>

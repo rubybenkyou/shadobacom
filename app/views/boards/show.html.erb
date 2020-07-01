@@ -1,0 +1,93 @@
+<div class="card text-dark">
+    <div class="card-header">
+        <div class="row align-items-center pl-3">
+            <div>
+                <%= "#{@board.title}"%>
+            </div> 
+            <div>
+              <% if @current_user %>
+               <% if @board.likes.find_by(user_id: @current_user.id) %>
+                <%= form_with model: @like,url: unlike_path,method: :delete do |f| %>
+                    <%= f.hidden_field :user_id,{value: @current_user.id} %>
+                    <%= f.hidden_field :board_id,{value: @board.id} %>
+                    <%= button_tag :type => "submit",class:"btn btn-light" do %>
+                     <i class="fas fa-heart text-danger"></i>
+                    <% end %>
+                <% end %>
+               <% else %>
+                <%= form_with model: @like ,url: like_path do |f| %>
+                 <%= f.hidden_field :user_id,{value: @current_user.id} %>
+                  <%= f.hidden_field :board_id,{value: @board.id} %>
+                  <%= button_tag :type => "submit",class:"btn btn-light" do %>
+                    <i class="far fa-heart"></i>
+                  <% end %>
+                <% end %>
+               <% end %>
+              <% else %>
+                  <%= button_tag class:"btn btn-light" do %>
+                    <i class="far fa-heart"></i>
+                  <% end %>
+              <% end %>
+            </div>
+            <div>
+                <%= @board.likes.count %>
+            </div>
+        </div>
+    </div>
+  <div class="card-body">
+    <p>説明</p>
+    <div>
+    <%= simple_format(@board.content) %>
+    </div>
+  </div>
+    <div class="card-footer">
+        <div class="text-right">
+            投稿者：<%= link_to "#{@board.user.name}",@board.user %>
+            <%= @board.updated_at.strftime('%Y/%m/%d %H:%M') %>
+            <% if @current_user && @current_user.id == @board.user_id %>
+                <%= link_to "編集",edit_board_path(@board),class:"btn btn-outline-dark" %>
+                <%= link_to "削除",board_path(@board),method: :delete,data:{confirm:"本当に削除しますか？"},class:"btn btn-outline-dark" %>
+            <% end %>
+        </div>
+    </div>
+</div>
+
+<hr>
+<br>
+<% if @board.comments.any? %>
+<h4>コメント一覧</h4>
+<% end %>
+<% @board.comments.each do |comment| %>
+<br>
+<div class="card text-dark slide_cards">
+  <div class="card-body">
+      <%= simple_format(comment.content) %>
+  </div>
+<div class="card-footer">
+    <div class="text-right">
+        投稿者：<%= link_to "#{comment.user.name}",comment.user %>
+        <%= comment.created_at.strftime('%Y/%m/%d %H:%M') %>
+        <% if @current_user && @current_user.id == comment.user.id %>
+        <%= link_to "削除",comment,class:"btn btn-outline-dark",method: :delete,data:{confirm:"本当にコメントを削除しますか？"} %>
+        <% end %>
+    </div>
+</div>
+</div>
+<% end %>
+<br>
+<% if @current_user %>
+    <%= render 'shared/error_messages' %>
+    <%= form_with model: @comment do |f| %>
+    <div class="form-group">
+        <%= f.hidden_field :user_id,{value: @current_user.id} %>
+        <%= f.hidden_field :board_id %>
+        <div class="form-group">
+            <label>コメント</label>
+            <%= f.text_area :content,class:"form-control" %>
+        </div>
+        <div class="form-group text-right">
+            <%= f.submit "コメントする",class:"btn btn-info" %>
+        </div>
+    </div>
+    <% end %>
+<% end %>

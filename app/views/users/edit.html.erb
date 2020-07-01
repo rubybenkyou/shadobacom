@@ -1,0 +1,7 @@
+<h4>ユーザー情報編集</h4>
+<%= render 'form' %>
+<%= form_with scope: :user,url: user_path(@user),method: :delete do |f| %>
+    <div class="form-group">
+        <%= f.submit "退会する",class:"btn btn-info",data:{confirm: "本当に退会してよろしいですか？"} %>
+    </div>
+<% end %>

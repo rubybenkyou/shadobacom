@@ -1,0 +1,129 @@
+<div class="text-center">
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/uUqIUo2uEBs" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+<br>
+<div class="row justify-content-center">
+    <div id="example-2" class="col-lg-8 col-12 text-center carousel slide bg-secondary rounded" data-ride="carousel">
+        <div class="carousel-inner" style="height:410px;">
+            <div class="carousel-item active">
+                <br>
+                <a href = "https://twitter.com/<%= @official.to_h[:statuses][0][:user][:screen_name] %>/status/<%= @official.to_h[:statuses][0][:id] %>" class="btn btn-dark" target="_blank">公式ツイッター</a>
+                <%= render 'tweet',a: @official.to_h[:statuses][0] %>
+            </div>
+            <div class="carousel-item">
+                <br>
+                <a href = "https://twitter.com/<%= @wins.to_h[:statuses][0][:user][:screen_name] %>/status/<%= @wins.to_h[:statuses][0][:id] %>" class="btn btn-dark" target="_blank">最新連勝ツイート</a>
+                <%= render 'tweet',a: @wins.to_h[:statuses][0] %>
+
+            </div>
+            <div class="carousel-item">
+                <br>
+                <a href = "https://twitter.com/<%= @esports.to_h[:statuses][0][:user][:screen_name] %>/status/<%= @esports.to_h[:statuses][0][:id] %>" class="btn btn-dark" target="_blank">プロリーグツイート</a>
+                <%= render 'tweet',a: @esports.to_h[:statuses][0] %>
+            </div>
+            <div class="carousel-item">
+                <br>
+                <a href = "https://twitter.com/<%= @ret.to_h[:statuses][0][:user][:screen_name] %>/status/<%= @ret.to_h[:statuses][0][:id] %>" class="btn btn-dark" target="_blank">話題のツイート</a>
+                <%= render 'tweet',a: @ret.to_h[:statuses][0] %>
+            </div>
+            <a class="carousel-control-prev" href="#example-2" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+                </a>
+            <a class="carousel-control-next" href="#example-2" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+    </div>
+</div>
+<br></br>
+<div class="row justify-content-center text-center text-dark">
+    <div class="card col-lg-5 col-12 mb-lg-0 mb-4">
+        <div class="card-body">
+            <p><i class="fab fa-hotjar text-warning"></i> 新着記事 <i class="fab fa-hotjar text-warning"></i></p>
+            <% last_board = @board_all.sort_by {|a| a.created_at}.reverse[0] %>
+            <%= link_to "#{last_board.title}",last_board %>
+            <%= simple_format(last_board.content) %>
+        </div>
+        <div class="text-right">
+            投稿者：<%= link_to "#{last_board.user.name}",last_board.user %>
+            <%= last_board.updated_at.strftime('%Y/%m/%d %H:%M') %>
+            <% if @current_user && @current_user.id == last_board.user_id %>
+                <%= link_to "編集",edit_board_path(last_board),class:"btn btn-outline-dark" %>
+                <%= link_to "削除",board_path(last_board),method: :delete,data:{confirm:"本当に削除しますか？"},class:"btn btn-outline-dark" %>
+            <% end %>
+            <br></br>
+        </div>
+    </div>
+    <div class="card col-lg-5 offset-lg-1 col-12 offset-0">
+        <div class="card-body">
+            <% like_top = @board_all.sort_by {|a| a.likes.count}.reverse[0] %>
+            <p>みんなのお気に入り記事 <i class="fas fa-heart text-danger"></i> <%= like_top.likes.count %></p>
+            <h4><%= link_to "#{like_top.title}",like_top %></h4>
+            <%= simple_format(like_top.content) %>
+        </div>
+        <div class="text-right">
+            投稿者：<%= link_to "#{like_top.user.name}",like_top.user %>
+            <%= like_top.updated_at.strftime('%Y/%m/%d %H:%M') %>
+            <% if @current_user && @current_user.id == like_top.user_id %>
+                <%= link_to "編集",edit_board_path(like_top),class:"btn btn-outline-dark" %>
+                <%= link_to "削除",board_path(like_top),method: :delete,data:{confirm:"本当に削除しますか？"},class:"btn btn-outline-dark" %>
+            <% end %>
+            <br></br>
+        </div>
+    </div>
+</div>
+<br></br>
+<h4>投稿一覧</h4>
+<br>
+<table class="table">
+    <thead class="table-dark">
+        <tr>
+            <td>記事No.</td>
+            <td>タイトル</td>
+            <td>投稿者</td>
+            <td id = "table_lg">投稿日時</td>
+            <td id = "table_lg">更新日時</td>
+            <td id = "table_lg">コメント数</td>
+            <td id = "table_lg">お気に入り数</td>
+            <td id = "table_lg"></td>
+            <td id = "table_lg"></td>
+        </tr>
+    </thead>
+    <tbody>
+        <% @boards.each do |board| %>
+        <tr>
+            <td><%= board.id %></td>
+            <td><%= link_to "#{board.title}",board %></td>
+            <td><%= link_to "#{board.user.name}",board.user %></td>
+            <td id = "table_lg"><%= board.created_at.strftime('%Y/%m/%d %H:%M')%></td>
+            <td id = "table_lg"><%= board.updated_at.strftime('%Y/%m/%d %H:%M') %></td>
+            <td id = "table_lg"><%= board.comments.count %></td>
+            <td id = "table_lg">
+                <% if @current_user %>
+                  <% if board.likes.find_by(user_id: @current_user.id) %>
+                      <i class="fas fa-heart text-danger"></i> 
+                  <% else %>
+                      <i class="far fa-heart"></i>
+                  <% end %>
+                  <% else %>
+                      <i class="far fa-heart"></i>
+                <% end %>
+                <%= board.likes.count %>
+            </td>
+            <td id = "table_lg">
+                <% if @current_user && @current_user.id == board.user_id %>
+                <%= link_to "編集",edit_board_path(board),class:"btn btn-outline-info" %>
+                <% end %>
+            </td>
+            <td id = "table_lg">
+                <% if @current_user && @current_user.id == board.user_id %>
+                <%= link_to "削除",board_path(board),method: :delete,data:{confirm:"本当に削除しますか？"},class:"btn btn-outline-info" %>
+                <% end %>
+            </td>
+        </tr>
+        <% end %>
+    </tbody>
+</table>
+<%= paginate @boards %>

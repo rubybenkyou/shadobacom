@@ -1,0 +1,29 @@
+<div class="container">
+    <div class="row">
+        <div class="col-1">
+            <img src="<%= a[:user][:profile_image_url] %>" class="rounded-circle"></img>
+        </div>
+        <div class="col-11">
+            <%= a[:user][:name] %>
+            @<%= a[:user][:screen_name] %>
+            <%= a[:text]%>
+            <%= Time.parse(a[:created_at]).in_time_zone('Tokyo').strftime('%Y/%m/%d %H:%M') %>
+            <br></br>
+            <% if a[:extended_entities].to_h[:media] %>
+                <% 1.times do |i| %>
+                    <% break unless a[:extended_entities].to_h[:media][i]  %>
+                    <img src="<%= a[:extended_entities].to_h[:media][i][:media_url] %>" class="text-align-center" height="150px;"></img>
+                    <br></br>
+                <% end %>
+            <% end %>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <i class="fa fa-retweet"></i> <%= a[:retweet_count] %>
+        </div>
+        <div class="col-6">
+            <i class="far fa-heart"></i> <%= a[:favorite_count]%>
+        </div>
+    </div>
+</div>

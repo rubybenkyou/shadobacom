@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>シャドバコミュニティ</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+  <body class="text-white" style="background-color:#000;">
+    <div class="container">
+      <div class="container text-center" style="display:flex;">
+        <br>
+        <div style="margin-right:auto;">
+          <br>
+          <%= link_to "TOP",root_path,class:"btn btn-outline-info" %>
+          <%= link_to "連勝ツイート",win_path,class:"btn btn-outline-info" %>
+          <%= link_to "HOTツイート",hot_path,class:"btn btn-outline-info" %>
+        </div>
+        <div style="position:absolute; left: 50%;transform: translateX(-50%); -webkit- transform: translateX(-50%);" id="logo">
+          <%= image_tag 'logo.png' %>
+        </div>
+        <div style="margin-left:auto;" id="right-menu">
+          <br>
+          <%= render 'layouts/menu' %>
+        </div>
+        <div id="small_menu" class="btn btn-outline-info">
+          <div class="modal">
+            <div class="inner">
+            <%= render 'layouts/menu' %>
+            </div>
+          </div>
+          <p><i class="fas fa-bars"></i></p>
+        </div>
+      </div>
+      <br>
+      <hr style="background-color: #ffffff"></hr>
+      <% if flash[:notice] %>
+      <div class="alert alert-success">
+        <%= flash[:notice] %>
+      </div>
+      <% end %>
+       <% if flash[:alert] %>
+      <div class="alert alert-danger">
+        <%= flash[:alert] %>
+      </div>
+      <% end %>
+      <%= yield %>
+      <hr style="background-color: #ffffff"></hr>
+    <fotter>
+      <p class="text-center h6">©シャドバコミュニティ</p>
+    </fotter>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script>
+      $(function(){
+        
+        //スライド処理
+        var window_h = $(window).height();
+        $(window).on("scroll", function() {
+          $(".slide_cards").each(function() {
+            var scroll_top = $(window).scrollTop();
+            var elem_pos = $(this).offset().top;
+            if (scroll_top >= elem_pos - window_h + 50) {
+              $(this).addClass("fadein_cards");
+            }
+          });
+        });
+        
+        
+        //ジャンプ処理
+        $(".jump").click(function() {
+          $("html, body").animate({ scrollTop: 0 },'slow');
+          return false;
+        });
+        
+        
+        //ジャンプボタン表示切り替え
+        $(window).on("scroll", function() {
+          if ($(window).scrollTop() > 500) {
+            $('.button').fadeIn(500);
+          }
+          else if ($(window).scrollTop() < 50){
+            $('.button').fadeOut(500);
+          }
+        });
+        
+       
+        //メニュー処理
+        $("#small_menu").click(function(){
+          $(".modal").fadeToggle();
+        });
+        
+        $(".modal").click(function(){
+          $(this).removeClass('modal,inner');
+        });
+        
+        
+        
+        
+      });
+    </script>
+  </body>
+</html>

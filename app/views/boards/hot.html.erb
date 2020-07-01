@@ -1,0 +1,13 @@
+<% 10.times do |i| %>
+<div class="row justify-content-center text-dark">
+    <div class="card col-lg-8 col-12 slide_cards">
+        <div class="card-body">
+            <%= render 'tweets_array',a: @hot.to_h[:statuses].sort_by{ |a| a[:retweet_count] }.reverse[i] %>
+        </div>
+    </div>
+</div>
+<br></br>
+<% end %>
+<div class="jump button">
+    <i class="fa fa-chevron-up"></i>
+</div>

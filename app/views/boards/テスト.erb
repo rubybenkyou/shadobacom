@@ -1,0 +1,36 @@
+<div>
+    <img src="<%= a[:user][:profile_image_url] %>"></img>
+    <%= a[:user][:name] %>
+    @<%= a[:user][:screen_name] %>
+    <% if a[:entities][:media]%>
+        <% del=a[:entities][:media][0][:url] %>
+        <%= a[:text].delete(del) %>
+    <% end %>
+    <% if a[:entities][:urls][0] %>
+        <%= link_to "link",a[:entities][:urls][0][:expanded_url]%>
+    <% end %>
+    <%= Time.parse(a[:created_at]).in_time_zone('Tokyo').strftime('%Y/%m/%d %H:%M') %>
+    <br></br>
+    <% if a[:extended_entities].to_h[:media] %>
+        <% 4.times do |i| %>
+            <% break unless a[:extended_entities].to_h[:media][i]  %>
+            <img src="<%= a[:extended_entities].to_h[:media][i][:media_url] %>" class="text-align-center" width="100%"></img>
+            <br></br>
+        <% end %>
+    <% end %>
+    <div>
+    </div>
+</div>
+
+
+<%= @official[1].to_h[:entities][:urls] %>
+<% indexone = @official[1].to_h[:entities][:urls][0][:indices][0] %>
+<% indextwo = @official[1].to_h[:entities][:urls][0][:indices][1] %>
+<% linkurl = @official[1].to_h[:text].slice(indexone..indextwo) %>
+<% lefttext = @official[1].to_h[:text].slice(0..indexone-1) %>
+<% righttext = @official[1].to_h[:text].slice(indextwo+1..-1) %>
+<div>
+    <%= lefttext %>
+    <a href="<%= "#{linkurl}" %>"><%= "#{linkurl}"%></a>
+    <%= righttext %>
+</div>
